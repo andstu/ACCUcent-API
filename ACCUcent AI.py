@@ -63,24 +63,58 @@ def getWavFiles():
 
     return wav_files
 
+#TODO: RETURN VALUES
 def getFloatEncodedWavFiles():
     encoded_wavs = []
-    wav_labels = []
+    #wav_labels = []
+    wav_labels_shortened = [[0,0]]
+
     wav_files = getWavFiles()
 
+
+    checkingAccentIndex = 0
     i = 0
     for wav in wav_files:
-        print(i)
+
+        accentIndex = getIndexFromLabel(getAccentLabel(wav))
+        if(checkingAccentIndex != accentIndex):
+            wav_labels_shortened.append([i,-1])
+            checkingAccentIndex = accentIndex
+
         encoded_wavs.append(parse_wave(wav))
-        wav_labels.append(getIndexFromLabel(getAccentLabel(wav)))
+        #wav_labels.append(accentIndex)
+        wav_labels_shortened[checkingAccentIndex][1] = i
 
         #THE DEBUGGING ZONE
         print("--------------------------------------------")
-        print("Label: " + getLabelFromIndex(wav_labels[i]))
-        print("Label Index: " + wav_labels[i].__str__())
-
+        print("Index: " + i.__str__())
+        #print("Label: " + getLabelFromIndex(wav_labels[i]))
+        #print("Label Index: " + wav_labels[i].__str__())
+        print("Span: (" + wav_labels_shortened[checkingAccentIndex][
+            0].__str__() + "," + wav_labels_shortened[checkingAccentIndex][1].__str__() + ")")
 
         i += 1
+
+#TODO: RETURN DATA
+def splitData(encoded_wavs, wav_labels_shortened, percentageTrained):
+    for i,span in enumerate(wav_labels_shortened):
+        lIndex = span[0]
+        rIndex = span[1]
+        size = (rIndex - lIndex) + 1
+        numToTrain = percentageTrained * size
+
+        training_set = []
+        testing_set = []
+
+        for i in range(lIndex,rIndex + 1):
+            if(i < lIndex + size):
+                training_set.append(encoded_wavs[i])
+            else:
+                testing_set.append(encoded_wavs[i])
+
+
+
+
 
 # samples = getFloatEncodedWavFiles()
 # print(samples)
