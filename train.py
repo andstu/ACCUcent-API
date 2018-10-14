@@ -13,8 +13,9 @@ print(test)
 
 print("A")
 model = keras.Sequential({
-    keras.layers.Dense(128, activation='tanh', input_shape=(len(train[0]), )),
-    keras.layers.Dense(53, activation=tf.nn.softmax) #Hard
+    keras.layers.Dense(256, activation='tanh', input_shape=(len(train[0]), )),
+    keras.layers.Dense(256, activation='tanh', input_shape=(len(train[0]), )),
+    keras.layers.Dense(18, activation=tf.nn.softmax) #Hard
 })
 print("B")
 model.compile(
