@@ -98,14 +98,15 @@ def getFloatEncodedWavFiles():
 
 #TODO: RETURN DATA
 def splitData(encoded_wavs, wav_labels_shortened, percentageTrained):
+    training_set = []
+    testing_set = []
     for i,span in enumerate(wav_labels_shortened):
         lIndex = span[0]
         rIndex = span[1]
         size = (rIndex - lIndex) + 1
         numToTrain = percentageTrained * size
 
-        training_set = []
-        testing_set = []
+
 
         for i in range(lIndex,rIndex + 1):
             if(i < lIndex + size):
@@ -119,7 +120,8 @@ initizalizeLabelReference()
 (lables, wavs) = getFloatEncodedWavFiles()
 (train, test) = splitData(wavs, lables, .8)
 print(wavs)
-print(len(train) + len(test))
+print(train) 
+print(test)
 # samples = getFloatEncodedWavFiles()
 # print(samples)
 
