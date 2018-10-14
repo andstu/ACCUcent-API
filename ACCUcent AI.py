@@ -68,7 +68,7 @@ def getWavFiles():
 def getFloatEncodedWavFiles():
     #maxlen = 0
     encoded_wavs = []
-    #wav_labels = []
+    wav_labels = []
     wav_labels_shortened = [[0,0]]
 
     wav_files = getWavFiles()
@@ -85,7 +85,7 @@ def getFloatEncodedWavFiles():
         temp = parse_wave(wav)
         #maxlen = max(maxlen, len(temp))
         encoded_wavs.append(temp)
-        #wav_labels.append(accentIndex)
+        wav_labels.append(accentIndex)
         wav_labels_shortened[checkingAccentIndex][1] = i
 
         #THE DEBUGGING ZONE
@@ -100,10 +100,10 @@ def getFloatEncodedWavFiles():
 
     padded = pad_sequences(encoded_wavs,dtype="int32",padding="post",value=0)
 
-    return (wav_labels_shortened, padded)
+    return (wav_labels_shortened, padded, wav_labels)
 
 #TODO: RETURN DATA
-def splitData(encoded_wavs, wav_labels_shortened, percentageTrained):
+def splitData(encoded_wavs, wav_labels_shortened, labelsLong, percentageTrained):
     training_set = []
     testing_set = []
     training_label = []
@@ -117,19 +117,21 @@ def splitData(encoded_wavs, wav_labels_shortened, percentageTrained):
         for j in range(lIndex,rIndex + 1):
             if(j < lIndex + numToTrain):
                 training_set.append(encoded_wavs[j])
+                training_label.append(labelsLong[j])
             else:
                 testing_set.append(encoded_wavs[j])
-    return (training_set, testing_set)
+                testing_label.append(labelsLong[j])
+    return (training_set, testing_set, training_label, testing_label)
 
 
 # lables = [ [0,1],[2,2],[3,5]]
 # wavs = [ [0.0,0.0,0.0],[0.0,0.0,0.0],[0.1,0.1,0.1],[0.2,0.2,0.2],[0.2,0.2,0.2],[0.2,0.2,0.2]]
 
 initizalizeLabelReference()
-(lables, wavs) = getFloatEncodedWavFiles()
-(train, test) = splitData(wavs, lables, .8)
+(lables, wavs, lablesLong) = getFloatEncodedWavFiles()
+(train, test) = splitData(wavs, lables, lables, .8)
 
-(train,test) = splitData(wavs,lables,.8)
+(train,test,trainLabel,testLabel) = splitData(wavs,lables,.8)
 print(train.__len__())
 print(test.__len__())
 
@@ -144,4 +146,8 @@ model.compile(
     metrics=['accuracy']
 )
 
-model.fit(train, lables, )
+model.fit(train, trainLabel, epochs=5)
+test_loss, test_acc = model.evaluate(test, testLabel)
+
+print('Test accuracy:', test_acc)
+print('Test loss:', test_loss)
