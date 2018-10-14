@@ -104,24 +104,27 @@ def splitData(encoded_wavs, wav_labels_shortened, percentageTrained):
         lIndex = span[0]
         rIndex = span[1]
         size = (rIndex - lIndex) + 1
-        numToTrain = percentageTrained * size
-
-
+        numToTrain = int(percentageTrained * size)
 
         for i in range(lIndex,rIndex + 1):
-            if(i < lIndex + size):
+            if(i < lIndex + numToTrain):
                 training_set.append(encoded_wavs[i])
             else:
                 testing_set.append(encoded_wavs[i])
     return (training_set, testing_set)
 
 
+test_lables = [ [0,1],[2,2],[3,5]]
+test_wavs = [ [0.0,0.0,0.0],[0.0,0.0,0.0],[0.1,0.1,0.1],[0.2,0.2,0.2],[0.2,0.2,0.2],[0.2,0.2,0.2]]
+
 initizalizeLabelReference()
-(lables, wavs) = getFloatEncodedWavFiles()
-(train, test) = splitData(wavs, lables, .8)
-print(wavs)
-print(train) 
-print(test)
+# (lables, wavs) = getFloatEncodedWavFiles()
+# (train, test) = splitData(wavs, lables, .8)
+
+(train,test) = splitData(test_wavs,test_lables,.8)
+print(train.__len__())
+print(test.__len__())
+
 # samples = getFloatEncodedWavFiles()
 # print(samples)
 
