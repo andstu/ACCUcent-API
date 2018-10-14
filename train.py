@@ -2,14 +2,18 @@ import numpy as np
 from tensorflow import keras
 import tensorflow as tf
 
+tf.RunOptions(report_tensor_allocations_upon_oom = True)
+
 train = np.load('train.npy')
 trainLabel = np.load('trainLabel.npy')
 test = np.load('test.npy')
 testLabel = np.load('testLabel.npy')
+print(train)
+print(test)
 
 print("A")
 model = keras.Sequential({
-    keras.layers.Dense(128, activation='tanh', input_shape=(len(train) + len(test), )),
+    keras.layers.Dense(128, activation='tanh', input_shape=(len(train[0]), )),
     keras.layers.Dense(53, activation=tf.nn.softmax) #Hard
 })
 print("B")
@@ -19,7 +23,7 @@ model.compile(
     metrics=['accuracy']
 )
 print("C")
-model.fit(train, trainLabel, epochs=5, batch_size=5)
+model.fit(train, trainLabel, epochs=30)
 print("D")
 test_loss, test_acc = model.evaluate(test, testLabel)
 

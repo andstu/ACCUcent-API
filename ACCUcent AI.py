@@ -41,7 +41,11 @@ def parse_wave(filename):
             wav_decoder.sample_rate,
             wav_decoder.audio
         ])
-    return audio
+    new = []
+    for x in audio:
+        new.append(x[0])
+    #print(new)
+    return new
 
 #Given a wav, returns the accent label
 def getAccentLabel(filename):
@@ -133,11 +137,15 @@ initizalizeLabelReference()
 (train,test,trainLabel,testLabel) = splitData(wavs,lables,lablesLong,.8)
 print(train.__len__())
 print(test.__len__())
+train = np.array(train)
+trainLabel = np.array(trainLabel)
+test = np.array(test)
+testLabel = np.array(testLabel)
 
-np.save('train.npy', np.array(train))
-np.save('trainLabel.npy', np.array(trainLabel))
-np.save('test.npy', np.array(test))
-np.save('testLabel.npy', np.array(testLabel))
+np.save('train.npy', train)
+np.save('trainLabel.npy', trainLabel)
+np.save('test.npy', test)
+np.save('testLabel.npy', testLabel)
 
 # model = keras.Sequential({
 #     keras.layers.Dense(128, activation='tanh', input_shape=(len(wavs), )),
