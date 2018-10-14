@@ -106,17 +106,19 @@ def getFloatEncodedWavFiles():
 def splitData(encoded_wavs, wav_labels_shortened, percentageTrained):
     training_set = []
     testing_set = []
+    training_label = []
+    testing_label = []
     for i,span in enumerate(wav_labels_shortened):
         lIndex = span[0]
         rIndex = span[1]
         size = (rIndex - lIndex) + 1
         numToTrain = int(percentageTrained * size)
 
-        for i in range(lIndex,rIndex + 1):
-            if(i < lIndex + numToTrain):
-                training_set.append(encoded_wavs[i])
+        for j in range(lIndex,rIndex + 1):
+            if(j < lIndex + numToTrain):
+                training_set.append(encoded_wavs[j])
             else:
-                testing_set.append(encoded_wavs[i])
+                testing_set.append(encoded_wavs[j])
     return (training_set, testing_set)
 
 
@@ -125,17 +127,21 @@ def splitData(encoded_wavs, wav_labels_shortened, percentageTrained):
 
 initizalizeLabelReference()
 (lables, wavs) = getFloatEncodedWavFiles()
-length = len(wavs[0])
-for wav in wavs:
-    if not(len(wav) == length):
-        print(len(wav), length)
 (train, test) = splitData(wavs, lables, .8)
 
 (train,test) = splitData(wavs,lables,.8)
 print(train.__len__())
 print(test.__len__())
 
-# model = keras.Sequential({
-#     keras.layers.Dense(128, activation='tanh'),
-#     keras.layers.Dense(len(label_reference), activation=tf.nn.softmax)
-# })
+model = keras.Sequential({
+    keras.layers.Dense(128, activation='tanh', input_shape=(len(wavs), )),
+    keras.layers.Dense(len(label_reference), activation=tf.nn.softmax)
+})
+
+model.compile(
+    optermizer=tf.train.AdamOptimizer(),
+    loss='sparse_ategorical_crossentopy',
+    metrics=['accuracy']
+)
+
+model.fit(train, lables, )
