@@ -1,6 +1,7 @@
 import os
 import tensorflow as tf
 from tensorflow import keras
+from tensorflow.keras.preprocessing.sequence import pad_sequences
 import numpy
 from tensorflow.contrib.framework.python.ops import audio_ops as contrib_audio
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2' ##Ignore Warning
@@ -65,6 +66,7 @@ def getWavFiles():
 
 #TODO: RETURN VALUES
 def getFloatEncodedWavFiles():
+    #maxlen = 0
     encoded_wavs = []
     #wav_labels = []
     wav_labels_shortened = [[0,0]]
@@ -80,8 +82,9 @@ def getFloatEncodedWavFiles():
         if(checkingAccentIndex != accentIndex):
             wav_labels_shortened.append([i,-1])
             checkingAccentIndex = accentIndex
-
-        encoded_wavs.append(parse_wave(wav))
+        temp = parse_wave(wav)
+        #maxlen = max(maxlen, len(temp))
+        encoded_wavs.append(temp)
         #wav_labels.append(accentIndex)
         wav_labels_shortened[checkingAccentIndex][1] = i
 
@@ -94,7 +97,10 @@ def getFloatEncodedWavFiles():
             0].__str__() + "," + wav_labels_shortened[checkingAccentIndex][1].__str__() + ")")
 
         i += 1
-    return (wav_labels_shortened, encoded_wavs)
+
+    padded = pad_sequences(encoded_wavs,dtype="int32",padding="post",value=0)
+
+    return (wav_labels_shortened, padded)
 
 #TODO: RETURN DATA
 def splitData(encoded_wavs, wav_labels_shortened, percentageTrained):
@@ -114,18 +120,22 @@ def splitData(encoded_wavs, wav_labels_shortened, percentageTrained):
     return (training_set, testing_set)
 
 
-test_lables = [ [0,1],[2,2],[3,5]]
-test_wavs = [ [0.0,0.0,0.0],[0.0,0.0,0.0],[0.1,0.1,0.1],[0.2,0.2,0.2],[0.2,0.2,0.2],[0.2,0.2,0.2]]
+# lables = [ [0,1],[2,2],[3,5]]
+# wavs = [ [0.0,0.0,0.0],[0.0,0.0,0.0],[0.1,0.1,0.1],[0.2,0.2,0.2],[0.2,0.2,0.2],[0.2,0.2,0.2]]
 
 initizalizeLabelReference()
-# (lables, wavs) = getFloatEncodedWavFiles()
-# (train, test) = splitData(wavs, lables, .8)
+(lables, wavs) = getFloatEncodedWavFiles()
+length = len(wavs[0])
+for wav in wavs:
+    if not(len(wav) == length):
+        print(len(wav), length)
+(train, test) = splitData(wavs, lables, .8)
 
-(train,test) = splitData(test_wavs,test_lables,.8)
+(train,test) = splitData(wavs,lables,.8)
 print(train.__len__())
 print(test.__len__())
 
-# samples = getFloatEncodedWavFiles()
-# print(samples)
-
-#getFloatEncodedWavFiles()
+# model = keras.Sequential({
+#     keras.layers.Dense(128, activation='tanh'),
+#     keras.layers.Dense(len(label_reference), activation=tf.nn.softmax)
+# })
