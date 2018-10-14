@@ -94,6 +94,7 @@ def getFloatEncodedWavFiles():
             0].__str__() + "," + wav_labels_shortened[checkingAccentIndex][1].__str__() + ")")
 
         i += 1
+    return (wav_labels_shortened, encoded_wavs)
 
 #TODO: RETURN DATA
 def splitData(encoded_wavs, wav_labels_shortened, percentageTrained):
@@ -114,10 +115,12 @@ def splitData(encoded_wavs, wav_labels_shortened, percentageTrained):
     return (training_set, testing_set)
 
 
-
-
+initizalizeLabelReference()
+(lables, wavs) = getFloatEncodedWavFiles()
+(train, test) = splitData(wavs, lables, .8)
+print(wavs)
+print(len(train) + len(test))
 # samples = getFloatEncodedWavFiles()
 # print(samples)
 
-initizalizeLabelReference()
-getFloatEncodedWavFiles()
+#getFloatEncodedWavFiles()
