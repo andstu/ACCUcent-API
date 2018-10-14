@@ -129,9 +129,8 @@ def splitData(encoded_wavs, wav_labels_shortened, labelsLong, percentageTrained)
 
 initizalizeLabelReference()
 (lables, wavs, lablesLong) = getFloatEncodedWavFiles()
-(train, test) = splitData(wavs, lables, lables, .8)
 
-(train,test,trainLabel,testLabel) = splitData(wavs,lables,.8)
+(train,test,trainLabel,testLabel) = splitData(wavs,lables,lablesLong,.8)
 print(train.__len__())
 print(test.__len__())
 
@@ -141,7 +140,7 @@ model = keras.Sequential({
 })
 
 model.compile(
-    optermizer=tf.train.AdamOptimizer(),
+    optimizer=tf.train.AdamOptimizer(),
     loss='sparse_ategorical_crossentopy',
     metrics=['accuracy']
 )
