@@ -2,7 +2,7 @@ import os
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras.preprocessing.sequence import pad_sequences
-import numpy
+import numpy as np
 from tensorflow.contrib.framework.python.ops import audio_ops as contrib_audio
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2' ##Ignore Warning
 
@@ -134,19 +134,24 @@ initizalizeLabelReference()
 print(train.__len__())
 print(test.__len__())
 
-model = keras.Sequential({
-    keras.layers.Dense(128, activation='tanh', input_shape=(len(wavs), )),
-    keras.layers.Dense(len(label_reference), activation=tf.nn.softmax)
-})
+np.save('train.npy', np.array(train))
+np.save('trainLabel.npy', np.array(trainLabel))
+np.save('test.npy', np.array(test))
+np.save('testLabel.npy', np.array(testLabel))
 
-model.compile(
-    optimizer=tf.train.AdamOptimizer(),
-    loss='sparse_ategorical_crossentopy',
-    metrics=['accuracy']
-)
+# model = keras.Sequential({
+#     keras.layers.Dense(128, activation='tanh', input_shape=(len(wavs), )),
+#     keras.layers.Dense(len(label_reference), activation=tf.nn.softmax)
+# })
 
-model.fit(train, trainLabel, epochs=5)
-test_loss, test_acc = model.evaluate(test, testLabel)
+# model.compile(
+#     optimizer=tf.train.AdamOptimizer(),
+#     loss='sparse_ategorical_crossentropy',
+#     metrics=['accuracy']
+# )
 
-print('Test accuracy:', test_acc)
-print('Test loss:', test_loss)
+# model.fit(np.array(train), np.array(trainLabel), epochs=5)
+# test_loss, test_acc = model.evaluate(np.array(test), np.array(testLabel))
+
+# print('Test accuracy:', test_acc)
+# print('Test loss:', test_loss)
