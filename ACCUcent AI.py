@@ -46,7 +46,7 @@ def parse_wave(filename):
 def getAccentLabel(filename):
     index = filename.rfind("\\")
     wav_name = filename[index + 1:]
-    file_information = str.split(',')
+    file_information = wav_name.split('-')
     return file_information[0]
 
 #Returns an array of all wav files across directories
@@ -65,18 +65,25 @@ def getWavFiles():
 
 def getFloatEncodedWavFiles():
     encoded_wavs = []
+    wav_labels = []
     wav_files = getWavFiles()
 
     i = 0
     for wav in wav_files:
         print(i)
         encoded_wavs.append(parse_wave(wav))
-        print(encoded_wavs.__len__())
+        wav_labels.append(getIndexFromLabel(getAccentLabel(wav)))
+
+        #THE DEBUGGING ZONE
+        print("--------------------------------------------")
+        print("Label: " + getLabelFromIndex(wav_labels[i]))
+        print("Label Index: " + wav_labels[i].__str__())
+
+
         i += 1
 
 # samples = getFloatEncodedWavFiles()
 # print(samples)
 
 initizalizeLabelReference()
-
-print("FINISHED")
+getFloatEncodedWavFiles()
