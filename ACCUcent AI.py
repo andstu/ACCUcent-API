@@ -111,7 +111,7 @@ def splitData(encoded_wavs, wav_labels_shortened, percentageTrained):
                 training_set.append(encoded_wavs[i])
             else:
                 testing_set.append(encoded_wavs[i])
-
+    return (training_set, testing_set)
 
 
 
