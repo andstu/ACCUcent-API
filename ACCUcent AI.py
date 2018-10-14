@@ -5,7 +5,7 @@ import numpy
 from tensorflow.contrib.framework.python.ops import audio_ops as contrib_audio
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2' ##Ignore Warning
 
-data_directory = r"C:\Users\Matt\Desktop\GitHub\ACCUcent-API\Data"
+data_directory = os.getcwd() + '\Data'
 
 #Given a wav, returns a array of amplitudes
 def parse_wave(filename):
