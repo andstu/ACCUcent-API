@@ -6,6 +6,27 @@ from tensorflow.contrib.framework.python.ops import audio_ops as contrib_audio
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2' ##Ignore Warning
 
 data_directory = os.getcwd() + '\Data'
+label_reference = []
+
+#initializes the label reference
+def initizalizeLabelReference():
+    accent_folder_file_names = [os.path.join(data_directory, f) for f in os.listdir(data_directory)]
+    for accent_folder in accent_folder_file_names:
+        index = accent_folder.rfind("\\")
+        accent = accent_folder[index + 1:]
+        label_reference.append(accent)
+
+def getIndexFromLabel(label):
+    i = 0
+    for x in label_reference:
+        if(x == label):
+            return i
+        i += 1
+
+    print("ERROR: INDEX NOT FOUND")
+
+def getLabelFromIndex(index):
+    return label_reference[index]
 
 #Given a wav, returns a array of amplitudes
 def parse_wave(filename):
@@ -24,7 +45,7 @@ def parse_wave(filename):
 #Given a wav, returns the accent label
 def getAccentLabel(filename):
     index = filename.rfind("\\")
-    wav_name = filename[index:]
+    wav_name = filename[index + 1:]
     file_information = str.split(',')
     return file_information[0]
 
@@ -53,11 +74,9 @@ def getFloatEncodedWavFiles():
         print(encoded_wavs.__len__())
         i += 1
 
-samples = getFloatEncodedWavFiles()
-print(samples)
+# samples = getFloatEncodedWavFiles()
+# print(samples)
 
-
+initizalizeLabelReference()
 
 print("FINISHED")
-
-
